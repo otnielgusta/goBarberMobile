@@ -10,9 +10,75 @@ import { RobotoSlab_400Regular, RobotoSlab_500Medium, RobotoSlab_600SemiBold, Ro
 import { useFonts } from 'expo-font';
 import Teste from './lib/teste/teste';
 import Agendamento from './lib/agendamento/agendamento';
+import UserContext from './lib/context/context';
+import {useState} from 'react'
+
+
 const Stack = createStackNavigator();
 
 export default function App() {
+  const foto = 'https://media-exp1.licdn.com/dms/image/C4E03AQFv9ByFE0FC0Q/profile-displayphoto-shrink_800_800/0/1651614551521?e=1659571200&v=beta&t=v84ILPeEG4pVKgsFI9hCrHmWfEefB8X4n-IG1izsnPQ'
+
+  const [cabelereiros, setCabelereiros] = useState([{
+    id: 1,
+    nome: "Otniel Silva",
+    foto:foto,
+    datas: "Segunda à Sexta",
+    horarios: "8h às 18:h"
+}, {
+    id: 2,
+    nome: "Otniel Silva",
+    foto: foto,
+    datas: "Segunda à Sexta",
+    horarios: "8h às 18:h"
+}, {
+    id: 3,
+    nome: "Otniel Silva",
+    foto: foto,
+    datas: "Segunda à Sexta",
+    horarios: "8h às 18:h"
+},
+{
+    id: 4,
+    nome: "Otniel Silva",
+    foto: foto,
+    datas: "Segunda à Sexta",
+    horarios: "8h às 18:h"
+}, {
+    id: 5,
+    nome: "Otniel Silva",
+    foto: foto,
+    datas: "Segunda à Sexta",
+    horarios: "8h às 18:h"
+}, {
+    id: 6,
+    nome: "Otniel Silva",
+    foto: foto,
+    datas: "Segunda à Sexta",
+    horarios: "8h às 18:h"
+},
+{
+    id: 7,
+    nome: "Otniel Silva",
+    foto: foto,
+    datas: "Segunda à Sexta",
+    horarios: "8h às 18:h"
+}, {
+    id: 8,
+    nome: "Otniel Silva",
+    foto: foto,
+    datas: "Segunda à Sexta",
+    horarios: "8h às 18:h"
+}, {
+    id: 9,
+    nome: "Otniel Silva",
+    foto: foto,
+    datas: "Segunda à Sexta",
+    horarios: "8h às 18:h"
+},
+]);    
+
+const[index, setIndex] = useState(0);
   const [fontsLoaded] = useFonts({
     RobotoSlab_400Regular,
     RobotoSlab_500Medium,
@@ -23,6 +89,8 @@ export default function App() {
     return null
   }
   return (
+    <UserContext.Provider value={[cabelereiros, setCabelereiros, index, setIndex]}>
+
       <NavigationContainer>
         <Stack.Navigator
           initialRouteName='Splash'
@@ -63,6 +131,8 @@ export default function App() {
           />
         </Stack.Navigator>
       </NavigationContainer>
+      </UserContext.Provider>
+
   );
 }
 //<View style={styles.container}>

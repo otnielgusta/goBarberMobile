@@ -1,18 +1,19 @@
 import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native"
 import Cabelereiros from "../context/Cabelereiros";
+import {useContext} from 'react'
+import UserContext from "../context/context";
 
-const getBackground = () =>{
-   
-}
 
 export default function CardAgendamentoCabelereiro(props) {
+    const [cabelereiros, setCabelereiros, index, setIndex] = useContext(UserContext);    
+
 
     return (
         <TouchableOpacity
             onPress={props.onPress}
         >
             <View
-                style={props.index == Cabelereiros.index ? styles.cardCabeleleiroSelected : styles.cardCabeleleiro}
+                style={props.index == index ? styles.cardCabeleleiroSelected : styles.cardCabeleleiro}
 
             >
                 <Image
@@ -20,7 +21,7 @@ export default function CardAgendamentoCabelereiro(props) {
                     source={{ uri: props.cabelereiro.foto }}
 
                 />
-                <Text style={styles.nome}>{props.cabelereiro.nome}</Text>
+                <Text style={props.index == index ? styles.nomeSelected : styles.nome}>{props.cabelereiro.nome}</Text>
             </View>
         </TouchableOpacity>
 
@@ -54,6 +55,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingLeft: 16,
         marginRight:16,
+
     },
     cardCabeleleiroFoto: {
         width: 32,
@@ -67,7 +69,19 @@ const styles = StyleSheet.create({
         fontStyle: 'normal',
         fontSize: 14,
         lineHeight: 18,
+        color :'#F4EDE8'
+    },
+
+    nomeSelected: {
+        marginLeft:8,
+        fontFamily: 'RobotoSlab_500Medium',
+        fontStyle: 'normal',
+        fontSize: 14,
+        lineHeight: 18,
         color: '#232129'
+
     }
+
+    
 
 })

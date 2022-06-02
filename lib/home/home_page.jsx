@@ -2,11 +2,11 @@ import { StatusBar } from "expo-status-bar";
 import { Text, View, StyleSheet, FlatList, Image, ScrollView } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CardCabeleleiro from "../components/card_cabeleleiro";
-import Cabelereiros from "../context/Cabelereiros";
+import {useContext} from 'react'
+import UserContext from "../context/context";
 
 export default function HomePage({navigation}) {
-
-
+    const [cabelereiros, setCabelereiros,index, setIndex] = useContext(UserContext);    
     
     return (
         <SafeAreaView
@@ -37,15 +37,14 @@ export default function HomePage({navigation}) {
                         <FlatList
                             
                             style={styles.lista}
-                            data={Cabelereiros.cabelereiros}
+                            data={cabelereiros}
                             renderItem={(cabelereiro) => {
+                                console.log(cabelereiro)
                                 return <CardCabeleleiro 
                                             cabelereiro={cabelereiro.item} 
                                             key={cabelereiro.id} 
                                             onPress={()=>{
-                                                Cabelereiros.setIndex(cabelereiro.index)
-                                                console.log(cabelereiro)
-
+                                                setIndex(cabelereiro.index);
                                                 navigation.push("Agendamento");
 
                                             }}

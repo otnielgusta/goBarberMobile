@@ -2,8 +2,13 @@ import { View, Text, StyleSheet, Image, FlatList, useState } from "react-native"
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CardAgendamentoCabelereiro from "../components/card_agendamento_cabelereiro";
 import Cabelereiros from "../context/Cabelereiros";
+import UserContext from "../context/context";
+import {useContext} from 'react'
+
 
 export default function Agendamento(props) {
+    const [cabelereiros, setCabelereiros, index, setIndex] = useContext(UserContext);    
+
     return (
         <SafeAreaView style={styles.container}>
             {
@@ -23,17 +28,17 @@ export default function Agendamento(props) {
             </View>
             <View style={styles.cabelereiro}>
                 <FlatList
-                    initialScrollIndex={Cabelereiros.index}
+                    initialScrollIndex={index}
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={styles.listaCabelereiros}
                     horizontal
-                    data={Cabelereiros.cabelereiros}
+                    data={cabelereiros}
                     renderItem={(cabeleleiro) => {
                         return <CardAgendamentoCabelereiro
                             cabelereiro={cabeleleiro.item}
                             key={cabeleleiro.index}
                             onPress={() => {
-                                Cabelereiros.setIndex(cabeleleiro.index)
+                                setIndex(cabeleleiro.index)
 
                             }}
                             index={cabeleleiro.index}
