@@ -1,10 +1,13 @@
-import { Text, View, StyleSheet, TextInput, TouchableOpacity, Image } from "react-native"
+import { Text, View, StyleSheet, TextInput, TouchableOpacity, Image, StatusBar } from "react-native"
 import ButtonConfirm from "../components/button_entrar_cadastrar";
 
 export default function Cadastro({ navigation }) {
     
     return (
         <View style={styles.container}>
+              <StatusBar 
+             backgroundColor="#312E38"
+             />
             <View style={styles.containerLogo}>
                 <Image
                     style={styles.logo}
@@ -24,6 +27,8 @@ export default function Cadastro({ navigation }) {
                     <TextInput
                         style={styles.input}
                         placeholder="Nome"
+                        placeholderTextColor='#666360'
+
                     />
                 </View>
 
@@ -38,6 +43,8 @@ export default function Cadastro({ navigation }) {
                     <TextInput
                         style={styles.input}
                         placeholder="E-mail"
+                        placeholderTextColor='#666360'
+
                     />
                 </View>
 
@@ -52,6 +59,7 @@ export default function Cadastro({ navigation }) {
                     <TextInput
                         secureTextEntry={true}
                         placeholder="Senha"
+                        placeholderTextColor='#666360'
 
                         style={styles.input}
                     />
@@ -123,10 +131,12 @@ const styles = StyleSheet.create({
     },
     input: {
         marginLeft: 15,
-        fontFamily: "RobotoSlab_500Medium",
+        flex: 1,
+        fontFamily: 'RobotoSlab_500Medium',
         color: '#666360',
         fontSize: 16,
-        lineHeight: 21
+        lineHeight: 21,
+        color: '#666360'
     },
     title: {
         fontFamily: "RobotoSlab_500Medium",

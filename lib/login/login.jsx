@@ -1,10 +1,12 @@
-import { Text, View, StyleSheet, TextInput, TouchableOpacity, Image } from "react-native"
+import { Text, View, StyleSheet, TextInput, TouchableOpacity, Image, StatusBar } from "react-native"
 import ButtonConfirm from "../components/button_entrar_cadastrar";
 
 export default function Login({ navigation }) {
-       return (
+    return (
         <View style={styles.container}>
-           
+            <StatusBar
+                backgroundColor="#312E38"
+            />
             <View style={styles.containerLogo}>
                 <Image
                     style={styles.logo}
@@ -114,12 +116,12 @@ const styles = StyleSheet.create({
     },
     input: {
         marginLeft: 15,
-        flex:1,
+        flex: 1,
         fontFamily: 'RobotoSlab_500Medium',
         color: '#666360',
         fontSize: 16,
         lineHeight: 21,
-        color:'#666360'
+        color: '#666360'
     },
     title: {
         fontFamily: 'RobotoSlab_500Medium',

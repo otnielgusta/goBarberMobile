@@ -1,103 +1,67 @@
-import { SafeAreaView, Text, View, StyleSheet, FlatList, Image } from "react-native";
+import { StatusBar } from "expo-status-bar";
+import { Text, View, StyleSheet, FlatList, Image, ScrollView } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context'
 import CardCabeleleiro from "../components/card_cabeleleiro";
+import Cabelereiros from "../context/Cabelereiros";
 
-export default function HomePage() {
+export default function HomePage({navigation}) {
 
 
-    const cabeleleiros = [
-        {
-            id: 1,
-            nome: "Otniel Silva",
-            foto: "Foto",
-            datas: "Segunda à Sexta",
-            horarios: "8h às 18:h"
-        }, {
-            id: 2,
-            nome: "Otniel Silva",
-            foto: "Foto",
-            datas: "Segunda à Sexta",
-            horarios: "8h às 18:h"
-        }, {
-            id: 3,
-            nome: "Otniel Silva",
-            foto: "Foto",
-            datas: "Segunda à Sexta",
-            horarios: "8h às 18:h"
-        },
-        {
-            id: 4,
-            nome: "Otniel Silva",
-            foto: "Foto",
-            datas: "Segunda à Sexta",
-            horarios: "8h às 18:h"
-        }, {
-            id: 5,
-            nome: "Otniel Silva",
-            foto: "Foto",
-            datas: "Segunda à Sexta",
-            horarios: "8h às 18:h"
-        }, {
-            id: 6,
-            nome: "Otniel Silva",
-            foto: "Foto",
-            datas: "Segunda à Sexta",
-            horarios: "8h às 18:h"
-        },
-        {
-            id: 7,
-            nome: "Otniel Silva",
-            foto: "Foto",
-            datas: "Segunda à Sexta",
-            horarios: "8h às 18:h"
-        }, {
-            id: 8,
-            nome: "Otniel Silva",
-            foto: "Foto",
-            datas: "Segunda à Sexta",
-            horarios: "8h às 18:h"
-        }, {
-            id: 9,
-            nome: "Otniel Silva",
-            foto: "Foto",
-            datas: "Segunda à Sexta",
-            horarios: "8h às 18:h"
-        },
-    ]
+    
     return (
+        <SafeAreaView
+            style={{ flex: 1 }}
 
-        <View style={styles.container}>
-            <View style={styles.header}>
-                <View style={styles.headerLeft}>
-                    <Text style={styles.headerBemVindo}>Bem vindo,</Text>
-                    <Text style={styles.headerNome}>Tiago Luchtenberg</Text>
-                </View>
-                <View style={styles.headerRight}>
-                    <Image
-                        style={styles.headerFoto}
-                        source={require('../../assets/icons/Foto.jpg')}
-                    />
-                </View>
 
+        >
+            <StatusBar
+                backgroundColor="#28262E"
+            />
+            <View style={styles.container}>
+                <View style={styles.header}>
+                    <View style={styles.headerLeft}>
+                        <Text style={styles.headerBemVindo}>Bem vindo,</Text>
+                        <Text style={styles.headerNome}>Tiago Luchtenberg</Text>
+                    </View>
+                    <View style={styles.headerRight}>
+                        <Image
+                            style={styles.headerFoto}
+                            source={{uri:"https://media-exp1.licdn.com/dms/image/C4E03AQFv9ByFE0FC0Q/profile-displayphoto-shrink_800_800/0/1651614551521?e=1659571200&v=beta&t=v84ILPeEG4pVKgsFI9hCrHmWfEefB8X4n-IG1izsnPQ"}}
+                        />
+                    </View>
+
+                </View>
+                <View style={styles.corpo}>
+                    <Text style={styles.title}>Cabeleleiros</Text>
+                    <View style={styles.corpoCabeleleiros}>
+                        <FlatList
+                            
+                            style={styles.lista}
+                            data={Cabelereiros.cabelereiros}
+                            renderItem={(cabelereiro) => {
+                                return <CardCabeleleiro 
+                                            cabelereiro={cabelereiro.item} 
+                                            key={cabelereiro.id} 
+                                            onPress={()=>{
+                                                Cabelereiros.setIndex(cabelereiro.index)
+                                                console.log(cabelereiro)
+
+                                                navigation.push("Agendamento");
+
+                                            }}
+                                        />
+                            }}
+                            keyExtractor={(item) => {
+                                item.id
+                            }}
+                        />
+
+                    </View>
+
+                </View>
             </View>
-            <View style={styles.corpo}>
-                <Text style={styles.title}>Cabeleleiros</Text>
-                <View style={styles.corpoCabeleleiros}>
-                    <FlatList
-                        style={styles.lista}
-                        data={cabeleleiros}
-                        renderItem={(cabeleleiro) => {
-                            console.log(cabeleleiro)
-                            return <CardCabeleleiro cabeleleiro={cabeleleiro.item} key={cabeleleiro.id} />
-                        }}
-                        keyExtractor={(item) => {
-                            item.id
-                        }}
-                    />
 
-                </View>
-
-            </View>
-        </View>
+        </SafeAreaView>
 
     );
 }
@@ -146,8 +110,8 @@ const styles = StyleSheet.create({
         paddingRight: 24,
 
     },
-    lista:{
-        marginBottom:50
+    lista: {
+        marginBottom: 50
     },
     title: {
         fontFamily: 'RobotoSlab_500Medium',
