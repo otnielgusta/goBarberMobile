@@ -11,74 +11,85 @@ import { useFonts } from 'expo-font';
 import Teste from './lib/teste/teste';
 import Agendamento from './lib/agendamento/agendamento';
 import UserContext from './lib/context/context';
-import {useState} from 'react'
+import { useState } from 'react'
+import AgendamenConcluido from './lib/AgendamentoConcluido/agendamento_concluído';
+import Perfil from './lib/perfil/perfil';
 
 
 const Stack = createStackNavigator();
 
 export default function App() {
-  const foto = 'https://media-exp1.licdn.com/dms/image/C4E03AQFv9ByFE0FC0Q/profile-displayphoto-shrink_800_800/0/1651614551521?e=1659571200&v=beta&t=v84ILPeEG4pVKgsFI9hCrHmWfEefB8X4n-IG1izsnPQ'
+  const foto = 'https://lh3.googleusercontent.com/bFytQbnUQXsph4pscbna6XyONqWofZc-uOPynCfgo6rbHrS815BxVMqPEHejHohA4-cMi8fI11mDwUJbhNQx=w2390-h955'
 
   const [cabelereiros, setCabelereiros] = useState([{
     id: 1,
     nome: "Otniel Silva",
-    foto:foto,
+    foto: foto,
     datas: "Segunda à Sexta",
     horarios: "8h às 18:h"
-}, {
+  }, {
     id: 2,
     nome: "Otniel Silva",
     foto: foto,
     datas: "Segunda à Sexta",
     horarios: "8h às 18:h"
-}, {
+  }, {
     id: 3,
     nome: "Otniel Silva",
     foto: foto,
     datas: "Segunda à Sexta",
     horarios: "8h às 18:h"
-},
-{
+  },
+  {
     id: 4,
     nome: "Otniel Silva",
     foto: foto,
     datas: "Segunda à Sexta",
     horarios: "8h às 18:h"
-}, {
+  }, {
     id: 5,
     nome: "Otniel Silva",
     foto: foto,
     datas: "Segunda à Sexta",
     horarios: "8h às 18:h"
-}, {
+  }, {
     id: 6,
     nome: "Otniel Silva",
     foto: foto,
     datas: "Segunda à Sexta",
     horarios: "8h às 18:h"
-},
-{
+  },
+  {
     id: 7,
     nome: "Otniel Silva",
     foto: foto,
     datas: "Segunda à Sexta",
     horarios: "8h às 18:h"
-}, {
+  }, {
     id: 8,
     nome: "Otniel Silva",
     foto: foto,
     datas: "Segunda à Sexta",
     horarios: "8h às 18:h"
-}, {
+  }, {
     id: 9,
     nome: "Otniel Silva",
     foto: foto,
     datas: "Segunda à Sexta",
     horarios: "8h às 18:h"
-},
-]);    
+  },
+  ]);
 
-const[index, setIndex] = useState(0);
+  const [index, setIndex] = useState(0);
+  const [horarios, setHorarios] = useState({
+    manha: ['09:00', '11:30', '12:00'],
+    tarde: ['12:00', '13:30', '14:00', '15:00', '17:30'],
+    noite: ['19:00', '19:30'],
+})
+
+  const [selectedHoraDia, setSelectedHoraDia] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState();
+
   const [fontsLoaded] = useFonts({
     RobotoSlab_400Regular,
     RobotoSlab_500Medium,
@@ -89,7 +100,7 @@ const[index, setIndex] = useState(0);
     return null
   }
   return (
-    <UserContext.Provider value={[cabelereiros, setCabelereiros, index, setIndex]}>
+    <UserContext.Provider value={[cabelereiros, setCabelereiros, index, setIndex, horarios, setHorarios, selectedHoraDia, setSelectedHoraDia, selectedIndex, setSelectedIndex]}>
 
       <NavigationContainer>
         <Stack.Navigator
@@ -129,9 +140,19 @@ const[index, setIndex] = useState(0);
             component={Agendamento}
 
           />
+          <Stack.Screen
+            name='AgendamentoConcluido'
+            component={AgendamenConcluido}
+
+          />
+          <Stack.Screen
+            name='Perfil'
+            component={Perfil}
+
+          />
         </Stack.Navigator>
       </NavigationContainer>
-      </UserContext.Provider>
+    </UserContext.Provider>
 
   );
 }

@@ -1,54 +1,130 @@
-import { View, Text, StyleSheet, Image, FlatList, useState } from "react-native";
+import { View, Text, StyleSheet, Image, FlatList, TouchableOpacity, ScrollView } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CardAgendamentoCabelereiro from "../components/card_agendamento_cabelereiro";
-import Cabelereiros from "../context/Cabelereiros";
 import UserContext from "../context/context";
-import {useContext} from 'react'
+import { useContext } from 'react';
+import DatePicker from 'react-native-modern-datepicker';
+import HorariosComponent from "../components/horarios_component";
 
-
-export default function Agendamento(props) {
-    const [cabelereiros, setCabelereiros, index, setIndex] = useContext(UserContext);    
+export default function Agendamento({ navigation }) {
+    const [
+        cabelereiros,
+        setCabelereiros,
+        index,
+        setIndex,
+        horarios,
+        setHorarios,
+        selectedHoraDia,
+        setSelectedHoraDia,
+        selectedIndex,
+        setSelectedIndex
+    ] = useContext(UserContext);
 
     return (
         <SafeAreaView style={styles.container}>
-            {
-                console.log(Cabelereiros.index)
-            }
+
             <View style={styles.header}>
-                <Image
-                    style={styles.voltar}
-                    source={require('../../assets/icons/VoltarPop.png')}
-                />
+                <TouchableOpacity
+                    onPress={() => {
+                        navigation.pop();
+                    }}
+                >
+
+                    <Image
+
+                        style={styles.voltar}
+                        source={require('../../assets/icons/VoltarPop.png')}
+                    />
+                </TouchableOpacity>
+
                 <Text style={styles.title}>Agendamento</Text>
-                <Image
-                    style={styles.foto}
-                    source={{uri:'https://media-exp1.licdn.com/dms/image/C4E03AQFv9ByFE0FC0Q/profile-displayphoto-shrink_800_800/0/1651614551521?e=1659571200&v=beta&t=v84ILPeEG4pVKgsFI9hCrHmWfEefB8X4n-IG1izsnPQ'}}
-                />
+                <TouchableOpacity
+                    onPress={() => {
+                        navigation.navigate("Perfil");
+                    }}
+                >
+                    <Image
+                        style={styles.foto}
+                        source={{ uri: 'https://lh3.googleusercontent.com/bFytQbnUQXsph4pscbna6XyONqWofZc-uOPynCfgo6rbHrS815BxVMqPEHejHohA4-cMi8fI11mDwUJbhNQx=w2390-h955' }}
+                    />
+                </TouchableOpacity>
 
             </View>
-            <View style={styles.cabelereiro}>
-                <FlatList
-                    initialScrollIndex={index}
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.listaCabelereiros}
-                    horizontal
-                    data={cabelereiros}
-                    renderItem={(cabeleleiro) => {
-                        return <CardAgendamentoCabelereiro
-                            cabelereiro={cabeleleiro.item}
-                            key={cabeleleiro.index}
-                            onPress={() => {
-                                setIndex(cabeleleiro.index)
+            <ScrollView>
+
+                <View style={styles.cabelereiro}>
+                    <FlatList
+                        initialScrollIndex={index}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={styles.listaCabelereiros}
+                        horizontal
+                        data={cabelereiros}
+                        renderItem={(cabeleleiro) => {
+                            return <CardAgendamentoCabelereiro
+                                cabelereiro={cabeleleiro.item}
+                                key={cabeleleiro.index}
+                                onPress={() => {
+                                    setIndex(cabeleleiro.index)
+
+                                }}
+                                index={cabeleleiro.index}
+                            />
+                        }}
+                        keyExtractor={(item) => {
+                            item.index
+                        }}
+                    />
+                </View>
+
+                <View style={styles.corpoAgendamento}>
+
+                    <View style={styles.divData}>
+                        <Text style={styles.escolhaData}>Escolha a data</Text>
+                        <DatePicker
+                            options={{
+
+                                backgroundColor: '#28262E',
+                                textHeaderColor: '#F4EDE8',
+                                textDefaultColor: '#666360',
+                                selectedTextColor: '#fff',
+                                defaultFont: 'RobotoSlab_500Medium',
+                                mainColor: '#999591',
+                                textSecondaryColor: '#666360',
+                                borderColor: 'rgba(122, 146, 165, 0.1)',
 
                             }}
-                            index={cabeleleiro.index}
+
+                            current="2020-07-13"
+                            selected="2020-07-23"
+                            mode="calendar"
+                            minuteInterval={30}
+                            style={{
+                                borderRadius: 10,
+                            }}
                         />
-                    }}
-                    keyExtractor={(item) => {
-                        item.index
-                    }}
-                />
-            </View>
+                    </View>
+                    <View style={styles.divHorario}>
+                        <Text style={styles.escolhaHorario}>Escolha o horário</Text>
+                        <View style={styles.horarios}>
+                            <HorariosComponent title="Manhã" indexHoraDia={0} horarios={horarios.manha} />
+                            <View style={{ height: 24 }} />
+                            <HorariosComponent title="Tarde" indexHoraDia={1} horarios={horarios.tarde} />
+                            <View style={{ height: 24 }} />
+                            <HorariosComponent title="Noite" indexHoraDia={2} horarios={horarios.noite} />
+                        </View>
+                    </View>
+                    <View>
+                        <TouchableOpacity
+                            style={styles.botao}
+                            onPress={() => {
+                                navigation.navigate("AgendamentoConcluido");
+
+                            }}
+                        ><Text style={styles.textoBotao}>Agendar</Text></TouchableOpacity>
+                    </View>
+                </View>
+            </ScrollView>
+
         </SafeAreaView>
     );
 }
@@ -87,17 +163,73 @@ const styles = StyleSheet.create({
         lineHeight: 28,
         color: '#F4EDE8',
     },
-    cabelereiro:{
-        display:'flex',
-        alignItems:'center',
-        justifyContent:'center',
+    cabelereiro: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         height: 120
     },
-    listaCabelereiros:{
-        paddingLeft:24,
-        paddingRight:8,
-        flexGrow:1,
-        alignItems:'center',
-        
-    }
+    listaCabelereiros: {
+        paddingLeft: 24,
+        paddingRight: 8,
+        flexGrow: 1,
+        alignItems: 'center',
+
+    },
+    corpoAgendamento: {
+        paddingLeft: 13,
+        paddingRight: 13,
+    },
+    escolhaData: {
+        fontFamily: 'RobotoSlab_500Medium',
+        fontStyle: 'normal',
+        fontSize: 25,
+        lineHeight: 33,
+        color: '#F4EDE8',
+        marginBottom: 24,
+        marginLeft: 13
+    },
+    escolhaHorario: {
+        fontFamily: 'RobotoSlab_500Medium',
+        fontStyle: 'normal',
+        fontSize: 25,
+        lineHeight: 33,
+        color: '#F4EDE8',
+        marginBottom: 24,
+    },
+    divHorario: {
+        marginTop: 40,
+        marginLeft: 13,
+        marginBottom: 40
+
+    },
+    horaDia: {
+        fontFamily: 'RobotoSlab_500Medium',
+        fontStyle: 'normal',
+        fontSize: 14,
+        lineHeight: 18,
+
+        color: '#999591',
+        marginBottom: 12,
+    },
+    botao: {
+        display: 'flex',
+        justifyContent: 'center',
+        backgroundColor: "#FF9000",
+        marginLeft: 13,
+        marginRight: 13,
+        marginBottom: 40,
+        height: 56,
+        borderRadius: 10
+    },
+    textoBotao: {
+        fontFamily: 'RobotoSlab_500Medium',
+        fontStyle: "normal",
+        fontSize: 16,
+        lineHeight: 21,
+        textAlign: "center",
+        color: "#312E38"
+
+    },
+
 })

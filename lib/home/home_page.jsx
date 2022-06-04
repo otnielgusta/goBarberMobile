@@ -1,18 +1,16 @@
 import { StatusBar } from "expo-status-bar";
-import { Text, View, StyleSheet, FlatList, Image, ScrollView } from "react-native";
+import { Text, View, StyleSheet, FlatList, Image, ScrollView, TouchableOpacity } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CardCabeleleiro from "../components/card_cabeleleiro";
-import {useContext} from 'react'
+import { useContext } from 'react'
 import UserContext from "../context/context";
 
-export default function HomePage({navigation}) {
-    const [cabelereiros, setCabelereiros,index, setIndex] = useContext(UserContext);    
-    
+export default function HomePage({ navigation }) {
+    const [cabelereiros, setCabelereiros, index, setIndex] = useContext(UserContext);
+
     return (
         <SafeAreaView
             style={{ flex: 1 }}
-
-
         >
             <StatusBar
                 backgroundColor="#28262E"
@@ -21,13 +19,20 @@ export default function HomePage({navigation}) {
                 <View style={styles.header}>
                     <View style={styles.headerLeft}>
                         <Text style={styles.headerBemVindo}>Bem vindo,</Text>
-                        <Text style={styles.headerNome}>Tiago Luchtenberg</Text>
+                        <Text style={styles.headerNome}>Otniel Silva</Text>
                     </View>
                     <View style={styles.headerRight}>
-                        <Image
-                            style={styles.headerFoto}
-                            source={{uri:"https://media-exp1.licdn.com/dms/image/C4E03AQFv9ByFE0FC0Q/profile-displayphoto-shrink_800_800/0/1651614551521?e=1659571200&v=beta&t=v84ILPeEG4pVKgsFI9hCrHmWfEefB8X4n-IG1izsnPQ"}}
-                        />
+                        <TouchableOpacity
+                            onPress={() => {
+                                navigation.navigate("Perfil");
+                            }}
+                        >
+                            <Image
+                                style={styles.headerFoto}
+                                source={{ uri: "https://lh3.googleusercontent.com/bFytQbnUQXsph4pscbna6XyONqWofZc-uOPynCfgo6rbHrS815BxVMqPEHejHohA4-cMi8fI11mDwUJbhNQx=w2390-h955" }}
+                            />
+                        </TouchableOpacity>
+
                     </View>
 
                 </View>
@@ -35,20 +40,19 @@ export default function HomePage({navigation}) {
                     <Text style={styles.title}>Cabeleleiros</Text>
                     <View style={styles.corpoCabeleleiros}>
                         <FlatList
-                            
+                            showsVerticalScrollIndicator={false}
                             style={styles.lista}
                             data={cabelereiros}
                             renderItem={(cabelereiro) => {
-                                console.log(cabelereiro)
-                                return <CardCabeleleiro 
-                                            cabelereiro={cabelereiro.item} 
-                                            key={cabelereiro.id} 
-                                            onPress={()=>{
-                                                setIndex(cabelereiro.index);
-                                                navigation.push("Agendamento");
+                                return <CardCabeleleiro
+                                    cabelereiro={cabelereiro.item}
+                                    key={cabelereiro.id}
+                                    onPress={() => {
+                                        setIndex(cabelereiro.index);
+                                        navigation.push("Agendamento");
 
-                                            }}
-                                        />
+                                    }}
+                                />
                             }}
                             keyExtractor={(item) => {
                                 item.id
