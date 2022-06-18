@@ -14,72 +14,14 @@ import UserContext from './lib/context/context';
 import { useState } from 'react'
 import AgendamenConcluido from './lib/AgendamentoConcluido/agendamento_concluído';
 import Perfil from './lib/perfil/perfil';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createStackNavigator();
 
 export default function App() {
   const foto = 'https://lh3.googleusercontent.com/bFytQbnUQXsph4pscbna6XyONqWofZc-uOPynCfgo6rbHrS815BxVMqPEHejHohA4-cMi8fI11mDwUJbhNQx=w2390-h955'
 
-  const [cabelereiros, setCabelereiros] = useState([{
-    id: 1,
-    nome: "Otniel Silva",
-    foto: foto,
-    datas: "Segunda à Sexta",
-    horarios: "8h às 18:h"
-  }, {
-    id: 2,
-    nome: "Otniel Silva",
-    foto: foto,
-    datas: "Segunda à Sexta",
-    horarios: "8h às 18:h"
-  }, {
-    id: 3,
-    nome: "Otniel Silva",
-    foto: foto,
-    datas: "Segunda à Sexta",
-    horarios: "8h às 18:h"
-  },
-  {
-    id: 4,
-    nome: "Otniel Silva",
-    foto: foto,
-    datas: "Segunda à Sexta",
-    horarios: "8h às 18:h"
-  }, {
-    id: 5,
-    nome: "Otniel Silva",
-    foto: foto,
-    datas: "Segunda à Sexta",
-    horarios: "8h às 18:h"
-  }, {
-    id: 6,
-    nome: "Otniel Silva",
-    foto: foto,
-    datas: "Segunda à Sexta",
-    horarios: "8h às 18:h"
-  },
-  {
-    id: 7,
-    nome: "Otniel Silva",
-    foto: foto,
-    datas: "Segunda à Sexta",
-    horarios: "8h às 18:h"
-  }, {
-    id: 8,
-    nome: "Otniel Silva",
-    foto: foto,
-    datas: "Segunda à Sexta",
-    horarios: "8h às 18:h"
-  }, {
-    id: 9,
-    nome: "Otniel Silva",
-    foto: foto,
-    datas: "Segunda à Sexta",
-    horarios: "8h às 18:h"
-  },
-  ]);
-
+  const [cabelereiros, setCabelereiros] = useState([]);
   const [index, setIndex] = useState(0);
   const [horarios, setHorarios] = useState({
     manha: ['09:00', '11:30', '12:00'],
@@ -89,6 +31,7 @@ export default function App() {
 
   const [selectedHoraDia, setSelectedHoraDia] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState();
+  const [asyncStorage, setAsyncStorage] = useState(AsyncStorage);
 
   const [fontsLoaded] = useFonts({
     RobotoSlab_400Regular,
@@ -100,7 +43,7 @@ export default function App() {
     return null
   }
   return (
-    <UserContext.Provider value={[cabelereiros, setCabelereiros, index, setIndex, horarios, setHorarios, selectedHoraDia, setSelectedHoraDia, selectedIndex, setSelectedIndex]}>
+    <UserContext.Provider value={[cabelereiros, setCabelereiros, index, setIndex, horarios, setHorarios, selectedHoraDia, setSelectedHoraDia, selectedIndex, setSelectedIndex, asyncStorage, setAsyncStorage]}>
 
       <NavigationContainer>
         <Stack.Navigator
@@ -110,44 +53,71 @@ export default function App() {
           <Stack.Screen
             name='Splash'
             component={SplashPage}
+            options={{
+              asyncStorage: AsyncStorage
+            }}
 
           />
           <Stack.Screen
             name='Teste'
             component={Teste}
+            options={{
+              asyncStorage: AsyncStorage
+            }}
 
           />
           <Stack.Screen
             name='Login'
             component={Login}
+            options={{
+              asyncStorage: AsyncStorage
+            }}
 
           />
           <Stack.Screen
             name='Cadastro'
             component={Cadastro}
+            options={{
+              asyncStorage: AsyncStorage
+            }}
           />
           <Stack.Screen
             name='ConfirmaCadastro'
             component={ConfirmaCadastro}
+            options={{
+              asyncStorage: AsyncStorage
+            }}
           />
           <Stack.Screen
             name='HomePage'
             component={HomePage}
+            options={{
+              asyncStorage: AsyncStorage
+            }}
 
           />
           <Stack.Screen
             name='Agendamento'
             component={Agendamento}
+            options={{
+              asyncStorage: AsyncStorage
+            }}
 
           />
           <Stack.Screen
             name='AgendamentoConcluido'
             component={AgendamenConcluido}
+            options={{
+              asyncStorage: AsyncStorage
+            }}
 
           />
           <Stack.Screen
             name='Perfil'
             component={Perfil}
+            options={{
+              asyncStorage: AsyncStorage
+            }}
 
           />
         </Stack.Navigator>

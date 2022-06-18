@@ -1,7 +1,31 @@
+import { useEffect, useState } from "react";
 import { Text, View, StyleSheet, TextInput, TouchableOpacity, Image, StatusBar } from "react-native"
 import ButtonConfirm from "../components/button_entrar_cadastrar";
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { login } from "../controllers/cliente_controller";
+
 export default function Login({ navigation }) {
+
+    const [email, setEmail] = useState("");
+    const [senha, setSenha] = useState("");
+    
+    const Armazenar = (chave, valor) =>{
+        AsyncStorage.setItem(chave, valor);
+    }
+
+    async function getLogin() {
+        const result = await login(email, senha);
+        if (result.retorno == true) {
+            Armazenar('cliente', JSON.stringify(result.data.user));
+            Armazenar('token', JSON.stringify(result.data.token));
+            navigation.navigate("HomePage");
+        } else {
+            alert("Login ou senha incorretos");
+
+        }
+    }
+
     return (
         <View style={styles.container}>
             <StatusBar
@@ -28,6 +52,8 @@ export default function Login({ navigation }) {
                         style={styles.input}
                         placeholder="E-mail"
                         placeholderTextColor='#666360'
+                        value={email}
+                        onChangeText={setEmail}
                     />
                 </View>
                 <View style={{ height: 10 }}>
@@ -42,13 +68,15 @@ export default function Login({ navigation }) {
                         placeholder="Senha"
                         placeholderTextColor='#666360'
                         style={styles.input}
+                        value={senha}
+                        onChangeText={setSenha}
                     />
                 </View>
             </View>
             <ButtonConfirm
                 texto="Entrar"
-                onPress={() => {
-                    navigation.navigate("HomePage");
+                onPress={async () => {
+                    await getLogin();
                 }}
             />
             <View style={styles.containerEsqueceuSenha}>

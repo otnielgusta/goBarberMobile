@@ -24,7 +24,7 @@ export default function CardCabeleleiro(props) {
                                 source={require('../../assets/icons/Calendario.png')}
                             />
                             <View style={{ width: 12 }}></View>
-                            <Text style={styles.textHorarioData}>{props.cabelereiro.datas}</Text>
+                            <Text style={styles.textHorarioData}>{props.cabelereiro.dias}</Text>
                         </View>
 
                         <View style={{ height: 6 }}></View>
@@ -35,7 +35,7 @@ export default function CardCabeleleiro(props) {
                                 source={require('../../assets/icons/Horario.png')}
                             />
                             <View style={{ width: 12 }}></View>
-                            <Text style={styles.textHorarioData}>{props.cabelereiro.horarios}</Text>
+                            <Text style={styles.textHorarioData}>{props.cabelereiro.horario}</Text>
                         </View>
                     </View>
 

@@ -2,8 +2,26 @@ import { StatusBar } from "expo-status-bar";
 import { Text, View, StyleSheet, FlatList, Image, ScrollView, TouchableOpacity, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import EspacadorVertical from "../components/espacador_vertical";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect, useState } from "react";
 
 export default function Perfil({ navigation }) {
+    const [user, setUser] = useState({});
+    const [atualizar, setAtualizar] = useState(false);
+    const [nome, setNome] = useState({});
+    const [email, setEmail] = useState({});
+
+    const Buscar = async (chave)=>{
+        const valor = await AsyncStorage.getItem(chave);
+        let usuario = JSON.parse(valor);
+        setUser(usuario);
+        setNome(usuario.nome);
+        setEmail(usuario.email);
+        console.log(usuario);
+    }    
+    useEffect(()=>{
+        Buscar('cliente');
+    },[atualizar])
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar
@@ -39,7 +57,7 @@ export default function Perfil({ navigation }) {
                     <View style={styles.fotoESelecionar}>
                         <Image
                             style={styles.foto}
-                            source={{ uri: 'https://lh3.googleusercontent.com/bFytQbnUQXsph4pscbna6XyONqWofZc-uOPynCfgo6rbHrS815BxVMqPEHejHohA4-cMi8fI11mDwUJbhNQx=w2390-h955' }}
+                            source={{ uri: user.foto }}
                         />
                         <TouchableOpacity>
 
@@ -64,7 +82,8 @@ export default function Perfil({ navigation }) {
                                 <TextInput
                                     placeholder="Nome"
                                     placeholderTextColor='#666360'
-
+                                    value={nome}
+                                    onChangeText={setNome}
                                     style={styles.input}
                                 />
                             </View>
@@ -77,7 +96,8 @@ export default function Perfil({ navigation }) {
                                 <TextInput
                                     placeholder="Email"
                                     placeholderTextColor='#666360'
-
+                                    value={email}
+                                    onChangeText={setEmail}
                                     style={styles.input}
                                 />
                             </View>

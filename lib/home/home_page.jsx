@@ -2,11 +2,37 @@ import { StatusBar } from "expo-status-bar";
 import { Text, View, StyleSheet, FlatList, Image, ScrollView, TouchableOpacity } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CardCabeleleiro from "../components/card_cabeleleiro";
-import { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import UserContext from "../context/context";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { listarCabelereiros } from "../controllers/cabelereiro_controller";
 
 export default function HomePage({ navigation }) {
     const [cabelereiros, setCabelereiros, index, setIndex] = useContext(UserContext);
+    const [user, setUser] = useState({});
+    const [atualizaPagina, setAtualizaPagina] = useState(false);
+
+    const Buscar = async (chave)=>{
+        const valor = await AsyncStorage.getItem(chave);
+        var user = JSON.parse(valor);
+        setUser(user);
+    }    
+    const BuscarERetornar = async (chave)=>{
+        const valor = await AsyncStorage.getItem(chave);
+        var valorJson = JSON.parse(valor);
+        return valorJson;
+    }    
+
+    Buscar("cliente");
+    async function listarCab(){
+        const token = await BuscarERetornar('token');
+        listarCabelereiros(token, setCabelereiros);
+
+    }
+
+    useEffect(()=>{
+        listarCab(user);
+    }, [atualizaPagina]);
 
     return (
         <SafeAreaView
@@ -19,7 +45,7 @@ export default function HomePage({ navigation }) {
                 <View style={styles.header}>
                     <View style={styles.headerLeft}>
                         <Text style={styles.headerBemVindo}>Bem vindo,</Text>
-                        <Text style={styles.headerNome}>Otniel Silva</Text>
+                        <Text style={styles.headerNome}>{user.nome}</Text>
                     </View>
                     <View style={styles.headerRight}>
                         <TouchableOpacity
@@ -29,7 +55,7 @@ export default function HomePage({ navigation }) {
                         >
                             <Image
                                 style={styles.headerFoto}
-                                source={{ uri: "https://lh3.googleusercontent.com/bFytQbnUQXsph4pscbna6XyONqWofZc-uOPynCfgo6rbHrS815BxVMqPEHejHohA4-cMi8fI11mDwUJbhNQx=w2390-h955" }}
+                                source={{ uri: user.foto }}
                             />
                         </TouchableOpacity>
 
