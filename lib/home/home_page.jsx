@@ -31,7 +31,7 @@ export default function HomePage({ navigation }) {
     }
 
     useEffect(()=>{
-        listarCab(user);
+        listarCab();
     }, [atualizaPagina]);
 
     return (

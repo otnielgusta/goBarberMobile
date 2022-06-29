@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import UserContext from "../context/context";
 
 export default function CardHorario(props) {
@@ -17,7 +17,8 @@ export default function CardHorario(props) {
         setSelectedIndex
     ] = useContext(UserContext);
 
-    if (props.indexHoraDia == selectedIndex && props.texto == selectedHoraDia) {
+    console.log(selectedHoraDia +" => "+ props.id);
+    if (props.id == selectedHoraDia) {
         return (
             <TouchableOpacity
                 style={styles.cardSelected}

@@ -2,9 +2,12 @@ import { View, Text, StyleSheet, Image, FlatList, TouchableOpacity, ScrollView }
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CardAgendamentoCabelereiro from "../components/card_agendamento_cabelereiro";
 import UserContext from "../context/context";
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import DatePicker from 'react-native-modern-datepicker';
 import HorariosComponent from "../components/horarios_component";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { listarHorario } from "../controllers/cabelereiro_controller";
+
 
 export default function Agendamento({ navigation }) {
     const [
@@ -19,6 +22,75 @@ export default function Agendamento({ navigation }) {
         selectedIndex,
         setSelectedIndex
     ] = useContext(UserContext);
+
+    const [loading, setLoading] = useState(false);
+    const [horariosDisponiveis, setHorariosDisponiveis] = useState([]);
+    const [user, setUser] = useState({});
+    const [manha, setManha] = useState([]);
+    const [tarde, setTarde] = useState([]);
+    const [noite, setNoite] = useState([]);
+    const [token, setToken] = useState([]);
+    const [haveToken, setHaveToken] = useState(false);
+
+    const Buscar = async (chave) => {
+        const valor = await AsyncStorage.getItem(chave);
+        var user = JSON.parse(valor);
+        setUser(user);
+    }
+    const BuscarERetornar = async (chave) => {
+        const valor = await AsyncStorage.getItem(chave);
+        var valorJson = JSON.parse(valor);
+        return valorJson;
+    }
+
+    const listarHor = async () => {
+        if (haveToken) {
+
+            setLoading(true);
+            console.log("Alterado no inicio")
+
+            response = await listarHorario(token, cabelereiros[index].id, setHorariosDisponiveis);
+            if (response.retorno == true) {
+                const manha = horariosDisponiveis.filter(function (val) {
+                    return val.parte == "manha"
+                });
+                const tarde = horariosDisponiveis.filter(function (val) {
+                    return val.parte == "tarde"
+                });
+
+                const noite = horariosDisponiveis.filter(function (val) {
+                    return val.parte == "noite"
+                });
+                setManha(manha);
+                setTarde(tarde);
+                setNoite(noite);
+            } else {
+                console.log(response.status);
+            }
+
+            console.log("Alterado no fim")
+
+            setLoading(false);
+        }
+
+    }
+
+    async function getToken() {
+        if (!haveToken) {
+            const token = await BuscarERetornar('token');
+            setToken(token);
+            setHaveToken(true);
+            console.log(token);
+
+        }
+
+
+    }
+
+    useEffect(() => {
+        getToken()
+        listarHor();
+    }, [loading]);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -45,7 +117,7 @@ export default function Agendamento({ navigation }) {
                 >
                     <Image
                         style={styles.foto}
-                        source={{ uri: 'https://lh3.googleusercontent.com/bFytQbnUQXsph4pscbna6XyONqWofZc-uOPynCfgo6rbHrS815BxVMqPEHejHohA4-cMi8fI11mDwUJbhNQx=w2390-h955' }}
+                        source={{ uri: user.foto }}
                     />
                 </TouchableOpacity>
 
@@ -106,11 +178,18 @@ export default function Agendamento({ navigation }) {
                     <View style={styles.divHorario}>
                         <Text style={styles.escolhaHorario}>Escolha o horário</Text>
                         <View style={styles.horarios}>
-                            <HorariosComponent title="Manhã" indexHoraDia={0} horarios={horarios.manha} />
-                            <View style={{ height: 24 }} />
-                            <HorariosComponent title="Tarde" indexHoraDia={1} horarios={horarios.tarde} />
-                            <View style={{ height: 24 }} />
-                            <HorariosComponent title="Noite" indexHoraDia={2} horarios={horarios.noite} />
+                            <Text>Manhã</Text>
+                            {
+                                loading == false ? <HorariosComponent horarios={manha} /> : <View><Text>Ainda nao </Text></View>
+                            }
+                            <Text>Tarde</Text>
+                            {
+                                loading == false ? <HorariosComponent horarios={tarde} /> : <View><Text>Ainda nao </Text></View>
+                            }
+                            <Text>Noite</Text>
+                            {
+                                loading == false ? <HorariosComponent horarios={noite} /> : <View><Text>Ainda nao </Text></View>
+                            }
                         </View>
                     </View>
                     <View>

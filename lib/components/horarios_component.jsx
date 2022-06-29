@@ -17,27 +17,9 @@ export default function HorariosComponent(props) {
         selectedIndex,
         setSelectedIndex
     ] = useContext(UserContext);
-    if (props.horarios.length == 0) {
-        return (
-            <View>
 
-                <Text style={styles.horaDia}>{props.title}</Text>
-                <Text style={styles.semHorario}>Sem horários disponíveis</Text>
-            </View>
-        );
-    }
-    else {
-
-        return (
-            <View>
-
-                <Text style={styles.horaDia}>{props.title}</Text>
-                <FlatList
-                    showsHorizontalScrollIndicator={false}
-                    horizontal
-                    data={props.horarios}
-                    renderItem={(horario) => {
-                        return <CardHorario
+    /*
+    <CardHorario
                             onPress={(e) => {
                                 e.preventDefault();
                                 setSelectedIndex(props.indexHoraDia);
@@ -46,15 +28,33 @@ export default function HorariosComponent(props) {
                             indexHoraDia={props.indexHoraDia}
                             texto={horario.item}
                         />
+                        */
 
-                    }}
-                    keyExtractor={(item) => {
-                        item.index
-                    }}
-                />
-            </View>
-        );
-    }
+    return (
+        <View>
+            <FlatList
+                showsHorizontalScrollIndicator={false}
+                horizontal
+                data={props.horarios}
+                renderItem={(horario) => {
+                    console.log(horario.item);
+                    return <CardHorario
+                        onPress={(e) => {
+                            e.preventDefault();
+                            setSelectedHoraDia(horario.item.id)
+                        }}
+                        id={horario.item.id}
+                        texto={horario.item.horario}
+                    />
+
+                }}
+                keyExtractor={(item) => {
+                    console.log("O ID É: "+item.id)
+                    item.id
+                }}
+            />
+        </View>
+    );
 
 }
 
