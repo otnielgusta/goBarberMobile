@@ -31,6 +31,7 @@ export default function Agendamento({ navigation }) {
     const [noite, setNoite] = useState([]);
     const [teste, setTeste] = useState(0);
     const [token, setToken] = useState("");
+    const [data, setData] = useState(new Date().toISOString().slice(0, 10));
 
 
     const BuscarERetornar = (chave) => {
@@ -45,7 +46,7 @@ export default function Agendamento({ navigation }) {
     const listarHor = async () => {
         setLoading(true);
         console.log("Alterado no inicio")
-        const response = await listarHorario(token, cabelereiros[index].id, setHorariosDisponiveis);
+        const response = await listarHorario(token, cabelereiros[index].id, setHorariosDisponiveis, data);
         if (response.retorno == true) {
             var manhaa;
             var tardee;
@@ -165,9 +166,17 @@ export default function Agendamento({ navigation }) {
                                 borderColor: 'rgba(122, 146, 165, 0.1)',
 
                             }}
-
-                            current="2020-07-13"
-                            selected="2020-07-23"
+                            onDateChange={(date)=>{
+                                console.log(date);
+                                const tt = new Date(date)
+                                setData(tt.toISOString().slice(0, 10));
+                                setManha([]);
+                                setTarde([])
+                                setNoite([]);
+                                listarHor();
+                                console.log(data);
+                            }}
+                            selected={data}
                             mode="calendar"
                             minuteInterval={30}
                             style={{

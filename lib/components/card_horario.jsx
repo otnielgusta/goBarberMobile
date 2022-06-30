@@ -17,7 +17,6 @@ export default function CardHorario(props) {
         setSelectedIndex
     ] = useContext(UserContext);
 
-    console.log(selectedHoraDia +" => "+ props.id);
     if (props.id == selectedHoraDia) {
         return (
             <TouchableOpacity

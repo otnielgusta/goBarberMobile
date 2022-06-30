@@ -37,7 +37,6 @@ export default function HorariosComponent(props) {
                 horizontal
                 data={props.horarios}
                 renderItem={(horario) => {
-                    console.log(horario.item);
                     return <CardHorario
                         onPress={(e) => {
                             e.preventDefault();
@@ -49,7 +48,6 @@ export default function HorariosComponent(props) {
 
                 }}
                 keyExtractor={(item) => {
-                    console.log("O ID É: "+item.id)
                     item.id
                 }}
             />
