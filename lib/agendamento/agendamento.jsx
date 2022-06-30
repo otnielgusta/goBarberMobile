@@ -29,8 +29,7 @@ export default function Agendamento({ navigation }) {
     const [manha, setManha] = useState([]);
     const [tarde, setTarde] = useState([]);
     const [noite, setNoite] = useState([]);
-    const [token, setToken] = useState([]);
-    const [haveToken, setHaveToken] = useState(false);
+    const [teste, setTeste] = useState(0);
 
     const Buscar = async (chave) => {
         const valor = await AsyncStorage.getItem(chave);
@@ -44,53 +43,41 @@ export default function Agendamento({ navigation }) {
     }
 
     const listarHor = async () => {
-        if (haveToken) {
+        const token = await BuscarERetornar('token');
+        setLoading(true);
+        console.log("Alterado no inicio")
 
-            setLoading(true);
-            console.log("Alterado no inicio")
+        response = await listarHorario(token, cabelereiros[index].id, setHorariosDisponiveis);
+        if (response.retorno == true) {
+            const manha = horariosDisponiveis.filter(function (val) {
+                return val.parte == "manha"
+            });
+            const tarde = horariosDisponiveis.filter(function (val) {
+                return val.parte == "tarde"
+            });
 
-            response = await listarHorario(token, cabelereiros[index].id, setHorariosDisponiveis);
-            if (response.retorno == true) {
-                const manha = horariosDisponiveis.filter(function (val) {
-                    return val.parte == "manha"
-                });
-                const tarde = horariosDisponiveis.filter(function (val) {
-                    return val.parte == "tarde"
-                });
-
-                const noite = horariosDisponiveis.filter(function (val) {
-                    return val.parte == "noite"
-                });
-                setManha(manha);
-                setTarde(tarde);
-                setNoite(noite);
-            } else {
-                console.log(response.status);
-            }
-
-            console.log("Alterado no fim")
-
-            setLoading(false);
+            const noite = horariosDisponiveis.filter(function (val) {
+                return val.parte == "noite"
+            });
+            setManha(manha);
+            setTarde(tarde);
+            setNoite(noite);
+        } else {
+            console.log(response.status);
         }
+        console.log(response);
+        console.log(horariosDisponiveis);
+        console.log("Alterado no fim")
+
+        setLoading(false);
 
     }
 
-    async function getToken() {
-        if (!haveToken) {
-            const token = await BuscarERetornar('token');
-            setToken(token);
-            setHaveToken(true);
-            console.log(token);
-
-        }
-
-
-    }
 
     useEffect(() => {
-        getToken()
+        Buscar();
         listarHor();
-    }, [loading]);
+    }, [teste]);
 
     return (
         <SafeAreaView style={styles.container}>
