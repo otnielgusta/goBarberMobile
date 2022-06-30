@@ -23,45 +23,56 @@ export default function Agendamento({ navigation }) {
         setSelectedIndex
     ] = useContext(UserContext);
 
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [horariosDisponiveis, setHorariosDisponiveis] = useState([]);
     const [user, setUser] = useState({});
     const [manha, setManha] = useState([]);
     const [tarde, setTarde] = useState([]);
     const [noite, setNoite] = useState([]);
     const [teste, setTeste] = useState(0);
+    const [token, setToken] = useState("");
 
-    const Buscar = async (chave) => {
-        const valor = await AsyncStorage.getItem(chave);
-        var user = JSON.parse(valor);
-        setUser(user);
-    }
-    const BuscarERetornar = async (chave) => {
-        const valor = await AsyncStorage.getItem(chave);
-        var valorJson = JSON.parse(valor);
-        return valorJson;
+
+    const BuscarERetornar = (chave) => {
+        AsyncStorage.getItem(chave)
+        .then((valor)=>{
+            var valorJson = JSON.parse(valor);
+            setToken(valorJson);
+        })
+        
     }
 
     const listarHor = async () => {
-        const token = await BuscarERetornar('token');
         setLoading(true);
         console.log("Alterado no inicio")
-
-        response = await listarHorario(token, cabelereiros[index].id, setHorariosDisponiveis);
+        const response = await listarHorario(token, cabelereiros[index].id, setHorariosDisponiveis);
         if (response.retorno == true) {
-            const manha = horariosDisponiveis.filter(function (val) {
-                return val.parte == "manha"
-            });
-            const tarde = horariosDisponiveis.filter(function (val) {
-                return val.parte == "tarde"
-            });
+            var manhaa;
+            var tardee;
+            var noitee;
+            if (manha.length == 0) {
+                manhaa = horariosDisponiveis.filter(function (val) {
+                    return val.parte == "manha"
+                });
+                setManha(manhaa);
+            }
+            if (tarde.length == 0) {
+                tardee = horariosDisponiveis.filter(function (val) {
+                    return val.parte == "tarde"
+                });
+            setTarde(tardee);
 
-            const noite = horariosDisponiveis.filter(function (val) {
-                return val.parte == "noite"
-            });
-            setManha(manha);
-            setTarde(tarde);
-            setNoite(noite);
+            }
+            if (noite.length == 0) {
+                noitee = horariosDisponiveis.filter(function (val) {
+                    return val.parte == "noite"
+                });
+            setNoite(noitee);
+
+            }
+
+          
+            setLoading(false);
         } else {
             console.log(response.status);
         }
@@ -69,15 +80,17 @@ export default function Agendamento({ navigation }) {
         console.log(horariosDisponiveis);
         console.log("Alterado no fim")
 
-        setLoading(false);
+        
 
     }
 
-
     useEffect(() => {
-        Buscar();
+        if(token == ""){
+
+            BuscarERetornar("token")
+        }
         listarHor();
-    }, [teste]);
+    }, [token,manha, tarde, noite]);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -167,15 +180,15 @@ export default function Agendamento({ navigation }) {
                         <View style={styles.horarios}>
                             <Text>Manhã</Text>
                             {
-                                loading == false ? <HorariosComponent horarios={manha} /> : <View><Text>Ainda nao </Text></View>
+                                manha.length > 0 ? <HorariosComponent horarios={manha} /> : <View><Text>Ainda nao </Text></View>
                             }
                             <Text>Tarde</Text>
                             {
-                                loading == false ? <HorariosComponent horarios={tarde} /> : <View><Text>Ainda nao </Text></View>
+                                tarde.length > 0? <HorariosComponent horarios={tarde} /> : <View><Text>Ainda nao </Text></View>
                             }
                             <Text>Noite</Text>
                             {
-                                loading == false ? <HorariosComponent horarios={noite} /> : <View><Text>Ainda nao </Text></View>
+                                noite.length > 0 ? <HorariosComponent horarios={noite} /> : <View><Text>Ainda nao </Text></View>
                             }
                         </View>
                     </View>
