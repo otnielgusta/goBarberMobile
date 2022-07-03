@@ -29,8 +29,9 @@ export default function App() {
     noite: ['19:00', '19:30'],
 })
 
-  const [selectedHoraDia, setSelectedHoraDia] = useState(0);
+  const [selectedHoraDia, setSelectedHoraDia] = useState({});
   const [selectedIndex, setSelectedIndex] = useState();
+  const [dadosAgendados, setDadosAgendados] = useState({});
   const [asyncStorage, setAsyncStorage] = useState(AsyncStorage);
 
   const [fontsLoaded] = useFonts({
@@ -43,7 +44,7 @@ export default function App() {
     return null
   }
   return (
-    <UserContext.Provider value={[cabelereiros, setCabelereiros, index, setIndex, horarios, setHorarios, selectedHoraDia, setSelectedHoraDia, selectedIndex, setSelectedIndex, asyncStorage, setAsyncStorage]}>
+    <UserContext.Provider value={[cabelereiros, setCabelereiros, index, setIndex, horarios, setHorarios, selectedHoraDia, setSelectedHoraDia, selectedIndex, setSelectedIndex, asyncStorage, setAsyncStorage, dadosAgendados, setDadosAgendados]}>
 
       <NavigationContainer>
         <Stack.Navigator

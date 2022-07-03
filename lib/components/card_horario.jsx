@@ -17,7 +17,7 @@ export default function CardHorario(props) {
         setSelectedIndex
     ] = useContext(UserContext);
 
-    if (props.id == selectedHoraDia) {
+    if (props.id == selectedHoraDia.id) {
         return (
             <TouchableOpacity
                 style={styles.cardSelected}

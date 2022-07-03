@@ -30,34 +30,47 @@ export default function HorariosComponent(props) {
                         />
                         */
 
-    return (
-        <View>
-            <FlatList
-                showsHorizontalScrollIndicator={false}
-                horizontal
-                data={props.horarios}
-                renderItem={(horario) => {
-                    return <CardHorario
-                        onPress={(e) => {
-                            e.preventDefault();
-                            setSelectedHoraDia(horario.item.id)
-                        }}
-                        id={horario.item.id}
-                        texto={horario.item.horario}
-                    />
-
-                }}
-                keyExtractor={(item) => {
-                    item.id
-                }}
-            />
-        </View>
-    );
+    if (props.horarios.length > 0) {
+        return (
+            <View style={styles.containerHorario}>
+                <FlatList
+                    showsHorizontalScrollIndicator={false}
+                    horizontal
+                    data={props.horarios}
+                    renderItem={(horario) => {
+                        return <CardHorario
+                            onPress={(e) => {
+                                e.preventDefault();
+                                setSelectedHoraDia(horario.item)
+                            }}
+                            id={horario.item.id}
+                            texto={horario.item.horario}
+                        />
+    
+                    }}
+                    keyExtractor={(item) => {
+                        item.id
+                    }}
+                />
+            </View>
+        );
+    }else{
+        return(
+            <View style={styles.containerHorario}>
+                <Text style={styles.texto}>Sem horários disponíveis</Text>
+            </View>
+        );
+    }               
+    
+    
 
 }
 
 const styles = StyleSheet.create({
 
+    containerHorario:{
+        marginBottom: 24
+    },
     horaDia: {
         fontFamily: 'RobotoSlab_500Medium',
         fontStyle: 'normal',
@@ -66,6 +79,13 @@ const styles = StyleSheet.create({
 
         color: '#999591',
         marginBottom: 12,
+    },
+    texto:{
+        color: "#999591",
+        marginLeft:10,
+        fontFamily: 'RobotoSlab_400Regular',
+        fontSize: 12,
+
     },
     semHorario: {
         fontFamily: 'RobotoSlab_500Medium',

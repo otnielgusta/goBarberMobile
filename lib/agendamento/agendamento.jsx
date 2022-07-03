@@ -7,6 +7,7 @@ import DatePicker from 'react-native-modern-datepicker';
 import HorariosComponent from "../components/horarios_component";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { listarHorario } from "../controllers/cabelereiro_controller";
+import { marcarConsulta } from "../controllers/horario_controller";
 
 
 export default function Agendamento({ navigation }) {
@@ -20,7 +21,9 @@ export default function Agendamento({ navigation }) {
         selectedHoraDia,
         setSelectedHoraDia,
         selectedIndex,
-        setSelectedIndex
+        setSelectedIndex,
+        dadosAgendados,
+        setDadosAgendados
     ] = useContext(UserContext);
 
     const [loading, setLoading] = useState(true);
@@ -29,18 +32,23 @@ export default function Agendamento({ navigation }) {
     const [manha, setManha] = useState([]);
     const [tarde, setTarde] = useState([]);
     const [noite, setNoite] = useState([]);
-    const [teste, setTeste] = useState(0);
     const [token, setToken] = useState("");
     const [data, setData] = useState(new Date().toISOString().slice(0, 10));
 
+    const BuscarERetornar = () => {
+        AsyncStorage.getItem("token")
+            .then((valor) => {
+                var valorJson = JSON.parse(valor);
+                setToken(valorJson);
+            })
 
-    const BuscarERetornar = (chave) => {
-        AsyncStorage.getItem(chave)
-        .then((valor)=>{
-            var valorJson = JSON.parse(valor);
-            setToken(valorJson);
-        })
-        
+        AsyncStorage.getItem("cliente")
+            .then((valor) => {
+                var user = JSON.parse(valor);
+                setUser(user);
+
+            })
+
     }
 
     const listarHor = async () => {
@@ -61,19 +69,18 @@ export default function Agendamento({ navigation }) {
                 tardee = horariosDisponiveis.filter(function (val) {
                     return val.parte == "tarde"
                 });
-            setTarde(tardee);
+                setTarde(tardee);
 
             }
             if (noite.length == 0) {
                 noitee = horariosDisponiveis.filter(function (val) {
                     return val.parte == "noite"
                 });
-            setNoite(noitee);
+                setNoite(noitee);
 
             }
 
-          
-            setLoading(false);
+
         } else {
             console.log(response.status);
         }
@@ -81,17 +88,19 @@ export default function Agendamento({ navigation }) {
         console.log(horariosDisponiveis);
         console.log("Alterado no fim")
 
-        
+        setLoading(false);
+
 
     }
 
     useEffect(() => {
-        if(token == ""){
 
-            BuscarERetornar("token")
+        if (token == "" || user == {}) {
+
+            BuscarERetornar()
         }
         listarHor();
-    }, [token,manha, tarde, noite]);
+    }, [token, manha]);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -138,7 +147,10 @@ export default function Agendamento({ navigation }) {
                                 key={cabeleleiro.index}
                                 onPress={() => {
                                     setIndex(cabeleleiro.index)
-
+                                    setManha([]);
+                                    setTarde([])
+                                    setNoite([]);
+                                    listarHor();
                                 }}
                                 index={cabeleleiro.index}
                             />
@@ -166,7 +178,7 @@ export default function Agendamento({ navigation }) {
                                 borderColor: 'rgba(122, 146, 165, 0.1)',
 
                             }}
-                            onDateChange={(date)=>{
+                            onDateChange={(date) => {
                                 console.log(date);
                                 const tt = new Date(date)
                                 setData(tt.toISOString().slice(0, 10));
@@ -187,26 +199,33 @@ export default function Agendamento({ navigation }) {
                     <View style={styles.divHorario}>
                         <Text style={styles.escolhaHorario}>Escolha o horário</Text>
                         <View style={styles.horarios}>
-                            <Text>Manhã</Text>
+                            <Text style={styles.titleHorario}>Manhã</Text>
                             {
-                                manha.length > 0 ? <HorariosComponent horarios={manha} /> : <View><Text>Ainda nao </Text></View>
+                                loading == false ? <HorariosComponent horarios={manha} /> : <View style={{ marginBottom: 12, }}><Text>Ainda nao </Text></View>
                             }
-                            <Text>Tarde</Text>
+                            <Text style={styles.titleHorario}>Tarde</Text>
                             {
-                                tarde.length > 0? <HorariosComponent horarios={tarde} /> : <View><Text>Ainda nao </Text></View>
+                                loading == false ? <HorariosComponent horarios={tarde} /> : <View style={{ marginBottom: 12, }}><Text>Ainda nao </Text></View>
                             }
-                            <Text>Noite</Text>
+                            <Text style={styles.titleHorario}>Noite</Text>
                             {
-                                noite.length > 0 ? <HorariosComponent horarios={noite} /> : <View><Text>Ainda nao </Text></View>
+                                loading == false ? <HorariosComponent horarios={noite} /> : <View style={{ marginBottom: 12, }}><Text>Ainda nao </Text></View>
                             }
                         </View>
                     </View>
                     <View>
                         <TouchableOpacity
                             style={styles.botao}
-                            onPress={() => {
-                                navigation.navigate("AgendamentoConcluido");
-
+                            onPress={async () => {
+                                setDadosAgendados({
+                                    horario: selectedHoraDia.horario,
+                                    data: data,
+                                    cliente: user.nome
+                                })
+                                const response = await marcarConsulta(token, selectedHoraDia.id, cabelereiros[index].id, data);
+                                if (response == 201) {
+                                    navigation.navigate("AgendamentoConcluido");
+                                }
                             }}
                         ><Text style={styles.textoBotao}>Agendar</Text></TouchableOpacity>
                     </View>
@@ -290,6 +309,13 @@ const styles = StyleSheet.create({
         marginLeft: 13,
         marginBottom: 40
 
+    },
+    titleHorario: {
+        color: "#999591",
+        marginBottom: 12,
+        fontFamily: 'RobotoSlab_500Medium',
+        fontStyle: 'normal',
+        fontSize: 14,
     },
     horaDia: {
         fontFamily: 'RobotoSlab_500Medium',

@@ -1,9 +1,28 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
+import UserContext from "../context/context";
+import { useContext, useEffect, useState } from "react";
 
 
 export default function AgendamenConcluido({navigation}) {
+    const [
+        cabelereiros,
+        setCabelereiros,
+        index,
+        setIndex,
+        horarios,
+        setHorarios,
+        selectedHoraDia,
+        setSelectedHoraDia,
+        selectedIndex,
+        setSelectedIndex,
+        dadosAgendados,
+        setDadosAgendados
+    ] = useContext(UserContext);
+
+
+
     return (
         <SafeAreaView style={styles.container}  >
             <StatusBar
@@ -16,7 +35,7 @@ export default function AgendamenConcluido({navigation}) {
                 />
                 <Text style={styles.title}>Agendamento</Text>
                 <Text style={styles.title}>concluído</Text>
-                <Text style={styles.subtitle}>Terça, dia 14 de março de 2020 às 12:00h com Otniel Silva</Text>
+                <Text style={styles.subtitle}>{dadosAgendados.data} às {dadosAgendados.horario}h com {dadosAgendados.cliente}</Text>
                 <TouchableOpacity
                     style={styles.botao}
                     onPress={() => {
