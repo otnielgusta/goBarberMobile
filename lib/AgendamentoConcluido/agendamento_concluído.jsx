@@ -21,7 +21,8 @@ export default function AgendamenConcluido({navigation}) {
         setDadosAgendados
     ] = useContext(UserContext);
 
-
+    //<Text style={styles.subtitle}>{dadosAgendados.data} às {dadosAgendados.horario}h com {dadosAgendados.cliente}</Text>
+    
 
     return (
         <SafeAreaView style={styles.container}  >
@@ -35,7 +36,7 @@ export default function AgendamenConcluido({navigation}) {
                 />
                 <Text style={styles.title}>Agendamento</Text>
                 <Text style={styles.title}>concluído</Text>
-                <Text style={styles.subtitle}>{dadosAgendados.data} às {dadosAgendados.horario}h com {dadosAgendados.cliente}</Text>
+                
                 <TouchableOpacity
                     style={styles.botao}
                     onPress={() => {
