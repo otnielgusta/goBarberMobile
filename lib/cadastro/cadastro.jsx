@@ -1,7 +1,12 @@
-import { Text, View, StyleSheet, TextInput, TouchableOpacity, Image, StatusBar } from "react-native"
+import { useState } from "react";
+import { Text, View, StyleSheet, TextInput, ToastAndroid, TouchableOpacity, Image, StatusBar } from "react-native"
 import ButtonConfirm from "../components/button_entrar_cadastrar";
+import {cadastro} from '../controllers/cliente_controller';
 
 export default function Cadastro({ navigation }) {
+    const [nome, setNome] = useState("");
+    const [email, setEmail] = useState("");
+    const [senha, setSenha] = useState("");
     
     return (
         <View style={styles.container}>
@@ -28,6 +33,10 @@ export default function Cadastro({ navigation }) {
                         style={styles.input}
                         placeholder="Nome"
                         placeholderTextColor='#666360'
+                        value={nome}
+                        onChangeText={(val)=>{
+                            setNome(val);
+                        }}
 
                     />
                 </View>
@@ -44,6 +53,10 @@ export default function Cadastro({ navigation }) {
                         style={styles.input}
                         placeholder="E-mail"
                         placeholderTextColor='#666360'
+                        value={email}
+                        onChangeText={(val)=>{
+                            setEmail(val);
+                        }}
 
                     />
                 </View>
@@ -60,15 +73,24 @@ export default function Cadastro({ navigation }) {
                         secureTextEntry={true}
                         placeholder="Senha"
                         placeholderTextColor='#666360'
-
                         style={styles.input}
+                        value={senha}
+                        onChangeText={(val)=>{
+                            setSenha(val);
+                        }}
                     />
                 </View>
             </View>
             <ButtonConfirm
                 texto="Cadastrar" 
-                onPress={() => {
-                    navigation.navigate("ConfirmaCadastro");
+                onPress={async() => {
+                    const response = await cadastro(nome, email, senha);
+                    console.log(response);
+                    if (response.status == 201) {
+                        navigation.navigate("ConfirmaCadastro");
+                    }else if(response.status == 401){
+                        alert(response.msg);
+                    }
                 }} />
             
             <View style={styles.footer}>
@@ -78,9 +100,7 @@ export default function Cadastro({ navigation }) {
                         onPress={() => {
                             navigation.pop();
                         }}
-
                     >
-
                         <Image
                             style={styles.criar}
                             source={require('../../assets/icons/Voltar.png')}

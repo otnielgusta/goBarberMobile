@@ -79,12 +79,7 @@ export default function Login({ navigation }) {
                     await getLogin();
                 }}
             />
-            <View style={styles.containerEsqueceuSenha}>
-                <Text style={styles.esqueceuSenha}
-                    onPress={() => alert("apertou")}>
-                    Esqueci minha senha
-                </Text>
-            </View>
+           
             <View style={styles.footer}>
                 <View style={styles.containerFooter} >
                     <TouchableOpacity
