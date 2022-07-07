@@ -1,27 +1,116 @@
 import { StatusBar } from "expo-status-bar";
-import { Text, View, StyleSheet, FlatList, Image, ScrollView, TouchableOpacity, TextInput } from "react-native";
+import { Text, View, StyleSheet, FlatList, Image, ScrollView, TouchableOpacity, TextInput, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import EspacadorVertical from "../components/espacador_vertical";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from "react";
+const { default: Host } = require("../host");
 
 export default function Perfil({ navigation }) {
     const [user, setUser] = useState({});
     const [atualizar, setAtualizar] = useState(false);
-    const [nome, setNome] = useState({});
-    const [email, setEmail] = useState({});
+    const [nome, setNome] = useState("");
+    const [email, setEmail] = useState("");
+    const [senha, setSenha] = useState("");
+    const [token, setToken] = useState("");
 
-    const Buscar = async (chave)=>{
+    const Buscar = async (chave) => {
         const valor = await AsyncStorage.getItem(chave);
         let usuario = JSON.parse(valor);
         setUser(usuario);
         setNome(usuario.nome);
         setEmail(usuario.email);
-        console.log(usuario);
-    }    
-    useEffect(()=>{
-        Buscar('cliente');
-    },[atualizar])
+    }
+
+    const BuscarERetornar = () => {
+        AsyncStorage.getItem("token")
+            .then((valor) => {
+                var valorJson = JSON.parse(valor);
+                setToken(valorJson);
+            })
+
+        AsyncStorage.getItem("cliente")
+            .then((valor) => {
+                var user = JSON.parse(valor);
+                setUser(user);
+                setNome(user.nome);
+                setEmail(user.email);
+            })
+
+    }
+
+    const buscaCliente = async () => {
+        let config = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                authorization: JSON.stringify(token)
+            }
+        }
+        const response = await fetch(Host.baseUrl + "/busca-cliente", config)
+
+        if (response.status == 200) {
+            
+            const resolve = await response.json();
+            setUsuario(JSON.parse(resolve.user));
+            setNome(resolve.user.nome);
+            setEmail(resolve.user.email);
+            setAtualizar(true);
+
+        } else if (response.status == 401) {
+            Alert.alert("Erro", "Ocorreu um erro!\n"+resolve.message)
+
+        } else if (response.status == 500) {
+            Alert.alert("Erro", "Ocorreu um erro!\n"+resolve.message)
+
+        }
+
+    }
+
+    const atualizaCabelereiro = async (e) => {
+        e.preventDefault();
+        const body = {
+            nome, nome,
+            email, email,
+            senha, senha
+        };
+        console.log(body);
+        let config = {
+            method: 'POST',
+            body: JSON.stringify(body),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                authorization: JSON.stringify(token)
+            }
+        }
+        fetch(Host.baseUrl + "/atualiza-cliente", config)
+            .then((response) => {
+                if (response.status == 202) {
+                    Alert.alert("Sucesso", "Dados atualizados com Sucesso!")
+                    buscaCliente();
+
+                } else if (response.status == 401) {
+                    Promise.resolve(response.json()).then((resolve) => {
+                        Alert.alert("Erro", response.msg)
+
+                    })
+
+                } else if (response.status == 500) {
+                    Promise.resolve(response.json()).then((resolve) => {
+                        Alert.alert("Erro", response.msg)
+
+                    })
+
+                }
+
+            })
+    }
+
+    useEffect(() => {
+        BuscarERetornar();
+    }, [atualizar])
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar
@@ -55,10 +144,19 @@ export default function Perfil({ navigation }) {
             <ScrollView>
                 <View style={styles.corpo}>
                     <View style={styles.fotoESelecionar}>
-                        <Image
-                            style={styles.foto}
-                            source={{ uri: user.foto }}
-                        />
+                        {
+                            user.foto ? <Image
+                                style={styles.foto}
+                                source={{ uri: user.foto }}
+
+                            /> :
+                                <Image
+                                    style={styles.foto}
+                                    source={require('../../assets/icons/Foto.jpg')}
+
+                                />
+                        }
+
                         <TouchableOpacity>
 
                             <View style={styles.viewCamera}>
@@ -110,48 +208,16 @@ export default function Perfil({ navigation }) {
                             />
                             <TextInput
                                 secureTextEntry={true}
-                                placeholder="Senha atual"
-                                placeholderTextColor='#666360'
-
-                                style={styles.input}
-                            />
-                        </View>
-                        <EspacadorVertical altura={8} />
-
-                        <View style={styles.inputContainer}>
-                            <Image
-                                style={styles.icon}
-                                source={require('../../assets/icons/Senha.png')}
-                            />
-                            <TextInput
-                                secureTextEntry={true}
                                 placeholder="Nova senha"
                                 placeholderTextColor='#666360'
-
-                                style={styles.input}
-                            />
-                        </View>
-                        <EspacadorVertical altura={8} />
-
-                        <View style={styles.inputContainer}>
-                            <Image
-                                style={styles.icon}
-                                source={require('../../assets/icons/Senha.png')}
-                            />
-                            <TextInput
-                                secureTextEntry={true}
-                                placeholder="Confirmar senha"
-                                placeholderTextColor='#666360'
-
+                                value={senha}
+                                onchangeText={setSenha}
                                 style={styles.input}
                             />
                         </View>
                         <TouchableOpacity
                             style={styles.botao}
-                            onPress={() => {
-                                navigation.pop();
-
-                            }}
+                            onPress={atualizaCabelereiro}
                         ><Text style={styles.textoBotao}>Confirmar mudanças</Text></TouchableOpacity>
                     </View>
                 </View>

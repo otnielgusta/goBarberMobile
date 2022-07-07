@@ -12,25 +12,25 @@ export default function HomePage({ navigation }) {
     const [user, setUser] = useState({});
     const [atualizaPagina, setAtualizaPagina] = useState(false);
 
-    const Buscar = async (chave)=>{
+    const Buscar = async (chave) => {
         const valor = await AsyncStorage.getItem(chave);
         var user = JSON.parse(valor);
         setUser(user);
-    }    
-    const BuscarERetornar = async (chave)=>{
+    }
+    const BuscarERetornar = async (chave) => {
         const valor = await AsyncStorage.getItem(chave);
         var valorJson = JSON.parse(valor);
         return valorJson;
-    }    
+    }
 
     Buscar("cliente");
-    async function listarCab(){
+    async function listarCab() {
         const token = await BuscarERetornar('token');
         listarCabelereiros(token, setCabelereiros);
 
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         listarCab();
     }, [atualizaPagina]);
 
@@ -53,10 +53,19 @@ export default function HomePage({ navigation }) {
                                 navigation.navigate("Perfil");
                             }}
                         >
-                            <Image
+                            {
+                                user.foto ? <Image
                                 style={styles.headerFoto}
                                 source={{ uri: user.foto }}
-                            />
+
+                                /> :
+                                    <Image
+                                    style={styles.headerFoto}
+                                    source={require('../../assets/icons/Foto.jpg')}
+
+                                    />
+                            }
+                           
                         </TouchableOpacity>
 
                     </View>

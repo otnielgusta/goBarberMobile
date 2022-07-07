@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Text, View, StyleSheet, TextInput, ToastAndroid, TouchableOpacity, Image, StatusBar } from "react-native"
+import { Text, View, StyleSheet, TextInput, ToastAndroid, TouchableOpacity, Image, StatusBar, Alert } from "react-native"
 import ButtonConfirm from "../components/button_entrar_cadastrar";
 import {cadastro} from '../controllers/cliente_controller';
 
@@ -89,7 +89,11 @@ export default function Cadastro({ navigation }) {
                     if (response.status == 201) {
                         navigation.navigate("ConfirmaCadastro");
                     }else if(response.status == 401){
-                        alert(response.msg);
+                        Alert.alert("Erro",response.msg)
+
+                    }else if(response.status == 409){
+                        Alert.alert("Erro",response.msg)
+
                     }
                 }} />
             
